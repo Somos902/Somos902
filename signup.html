@@ -21,27 +21,63 @@
     }
 
     .card {
-      width: 500px;
+      width: 520px;
       padding: 35px;
-      border-radius: 20px;
+      border-radius: 22px;
       background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    h2 {
-      margin-bottom: 20px;
       text-align: center;
     }
 
-    .input-group {
+    h2 {
       margin-bottom: 15px;
+    }
+
+    /* FOTO PERFIL */
+    .profile-upload {
+      width: 110px;
+      height: 110px;
+      margin: 10px auto 20px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-upload img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: 0.3s;
+      font-size: 12px;
+      padding: 10px;
+    }
+
+    .profile-upload:hover .overlay {
+      opacity: 1;
     }
 
     input {
       width: 100%;
-      padding: 10px;
-      border-radius: 10px;
+      padding: 11px;
+      margin-bottom: 12px;
+      border-radius: 12px;
       border: none;
       outline: none;
       background: rgba(255,255,255,0.15);
@@ -58,21 +94,21 @@
 
     .eye {
       position: absolute;
-      right: 10px;
-      top: 10px;
+      right: 12px;
+      top: 11px;
       cursor: pointer;
     }
 
     .btn {
-      margin-top: 10px;
       width: 100%;
       padding: 12px;
-      border-radius: 10px;
+      border-radius: 12px;
       border: none;
       background: #1e90ff;
       color: white;
       font-weight: bold;
       cursor: pointer;
+      margin-top: 5px;
     }
 
     .btn:hover {
@@ -80,60 +116,123 @@
     }
 
     .msg {
-      margin-top: 15px;
-      text-align: center;
+      margin-top: 10px;
       font-weight: bold;
+      min-height: 20px;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h2>Crear Cuenta</h2>
+<div class="card">
+  <h2>Crear Cuenta</h2>
 
-    <div class="input-group">
-      <input type="text" id="usuario" placeholder="Usuario">
-    </div>
+  <!-- FOTO PERFIL -->
+  <label class="profile-upload">
+    <img id="preview" style="display:none;">
+    <div class="overlay">Sube desde la computadora</div>
+    <input type="file" id="foto" accept="image/png, image/jpeg" hidden>
+  </label>
 
-    <div class="input-group">
-      <input type="email" id="correo" placeholder="Correo electrónico">
-    </div>
+  <input type="text" id="usuario" placeholder="Usuario">
+  <input type="email" id="correo" placeholder="Correo electrónico">
 
-    <div class="input-group password-wrapper">
-      <input type="password" id="password" placeholder="Contraseña">
-      <span class="eye" onclick="togglePassword()">👁</span>
-    </div>
-
-    <div class="input-group">
-      <input type="text" id="foto" placeholder="URL Foto de perfil">
-    </div>
-
-    <button class="btn" onclick="crearCuenta()">¡Crear Cuenta!</button>
-
-    <div class="msg" id="mensaje"></div>
+  <div class="password-wrapper">
+    <input type="password" id="password" placeholder="Contraseña">
+    <span class="eye" onclick="togglePassword()">👁</span>
   </div>
 
-  <script>
-    function togglePassword() {
-      const pass = document.getElementById("password");
-      pass.type = pass.type === "password" ? "text" : "password";
+  <button class="btn" onclick="crearCuenta()">¡Crear Cuenta!</button>
+
+  <div class="msg" id="mensaje"></div>
+</div>
+
+<script>
+  const fotoInput = document.getElementById("foto");
+  const preview = document.getElementById("preview");
+
+  // Click en círculo abre explorador
+  document.querySelector(".profile-upload").addEventListener("click", () => {
+    fotoInput.click();
+  });
+
+  // Preview imagen
+  fotoInput.addEventListener("change", () => {
+    const file = fotoInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  function togglePassword() {
+    const pass = document.getElementById("password");
+    pass.type = pass.type === "password" ? "text" : "password";
+  }
+
+  function validarCorreo(correo) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+  }
+
+  function validarPassword(pass) {
+    return /^(?=.*[A-Z]).{8,}$/.test(pass);
+  }
+
+  function crearCuenta() {
+    const usuario = document.getElementById("usuario").value.trim();
+    const correo = document.getElementById("correo").value.trim();
+    const password = document.getElementById("password").value;
+    const mensaje = document.getElementById("mensaje");
+
+    const file = fotoInput.files[0];
+
+    if (!usuario || !correo || !password || !file) {
+      mensaje.textContent = "Completa todos los campos";
+      mensaje.style.color = "orange";
+      return;
     }
 
-    function crearCuenta() {
-      const usuario = document.getElementById("usuario").value;
-      const correo = document.getElementById("correo").value;
-      const password = document.getElementById("password").value;
-      const foto = document.getElementById("foto").value;
-      const mensaje = document.getElementById("mensaje");
+    if (usuario.includes(" ")) {
+      mensaje.textContent = "El usuario no puede tener espacios";
+      mensaje.style.color = "orange";
+      return;
+    }
 
-      if (!usuario || !correo || !password || !foto) {
-        mensaje.textContent = "Completa todos los campos";
-        mensaje.style.color = "orange";
-        return;
-      }
+    if (!validarCorreo(correo)) {
+      mensaje.textContent = "Correo no válido";
+      mensaje.style.color = "orange";
+      return;
+    }
 
-      const cuenta = { usuario, correo, password, foto };
-      localStorage.setItem("cuenta902", JSON.stringify(cuenta));
+    if (!validarPassword(password)) {
+      mensaje.textContent = "Contraseña: 8+ caracteres y 1 mayúscula";
+      mensaje.style.color = "orange";
+      return;
+    }
+
+    let cuentas = JSON.parse(localStorage.getItem("cuentas902")) || [];
+
+    if (cuentas.some(c => c.correo === correo)) {
+      mensaje.textContent = "Ese correo ya está registrado";
+      mensaje.style.color = "orange";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      const nuevaCuenta = {
+        usuario,
+        correo,
+        password,
+        foto: e.target.result
+      };
+
+      cuentas.push(nuevaCuenta);
+      localStorage.setItem("cuentas902", JSON.stringify(cuentas));
 
       mensaje.textContent = "Cuenta creada correctamente ✅";
       mensaje.style.color = "lightgreen";
@@ -141,8 +240,11 @@
       setTimeout(() => {
         window.location.href = "index.html";
       }, 1500);
-    }
-  </script>
+    };
+
+    reader.readAsDataURL(file);
+  }
+</script>
 
 </body>
 </html>
