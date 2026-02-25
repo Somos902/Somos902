@@ -3,80 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <title>Curso 902</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(#ab29cb, #df5eff, #000000, #000000);
-      color: white;
-      text-align: center;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 30px;
-      background: rgba(0,0,0,0.3);
-    }
-
-    button {
-      padding: 10px 15px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .blue { background: #2196f3; color: white; }
-
-    #userPanel {
-      display: none;
-      align-items: center;
-      gap: 10px;
-    }
-
-    img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<header>
-  <div id="authButtons">
-    <button onclick="location.href='signup.html'">Crear Cuenta</button>
-    <button onclick="location.href='login.html'">Iniciar Sesión</button>
+<header class="topbar">
+  <div class="nav-left">
+    <a href="signup.html">Crear Cuenta</a>
+    <a href="login.html">Iniciar sesión</a>
   </div>
 
-  <div id="userPanel">
-    <img id="profilePic">
-    <b id="username"></b>
-    <button onclick="cerrarSesion()">🚪</button>
+  <div class="nav-center">
+    <select>
+      <option>test</option>
+    </select>
   </div>
+
+  <div class="nav-right" id="user-area"></div>
 </header>
 
-<h1>Bienvenido al Curso 902 ✨</h1>
+<main class="hero">
+
+  <div class="card-left">
+    <span class="tag">PRESENTANDO A…</span>
+    <h1>Conoce a <strong>902</strong></h1>
+
+    <p>
+      EL MEJOR NOVENO, QUIEN<br>
+      PENSARÍA QUE TENDRÍA SU<br>
+      PROPIO SITIO WEB.
+    </p>
+
+    <button>CONÓCENOS</button>
+  </div>
+
+  <div class="card-right">
+    <div class="badge">Actualización: 24/02</div>
+    <img src="imagen902.png" alt="902">
+  </div>
+
+</main>
 
 <script>
-  const sesion = JSON.parse(localStorage.getItem("sesion902"));
+const currentUser = localStorage.getItem("session");
 
-  if (sesion) {
-    document.getElementById("authButtons").style.display = "none";
-    document.getElementById("userPanel").style.display = "flex";
+if (currentUser) {
+  const user = JSON.parse(currentUser);
+  const area = document.getElementById("user-area");
 
-    document.getElementById("username").textContent = sesion.usuario;
-    document.getElementById("profilePic").src = sesion.foto || 
-      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
-  }
+  area.innerHTML = `
+    <div class="user-info">
+      <img src="${user.photo}" class="avatar">
+      <strong>${user.username}</strong>
+      <span class="logout" onclick="logout()">🚪</span>
+    </div>
+  `;
 
-  function cerrarSesion() {
-    localStorage.removeItem("sesion902");
-    window.location.reload();
-  }
+  document.querySelector(".nav-left").style.display = "none";
+}
+
+function logout() {
+  localStorage.removeItem("session");
+  location.replace("index.html");
+}
 </script>
 
 </body>
