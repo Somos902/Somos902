@@ -1,4 +1,4 @@
-## Hi there 👋
+## Hi there 👋 press CODE to check more.
 
 <!--}
 
