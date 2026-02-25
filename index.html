@@ -13,25 +13,44 @@
 
     body {
       height: 100vh;
-      background: linear-gradient(
-        to bottom,
-        #ab29cb,
-        #df5eff,
-        #000000,
-        #000000
-      );
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background: linear-gradient(to bottom, #ab29cb, #df5eff, #000000, #000000);
       color: white;
     }
 
-    .container {
-      width: 90%;
-      max-width: 1200px;
+    /* NAVBAR */
+    .navbar {
+      width: 100%;
+      padding: 15px 40px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
+    }
+
+    .nav-left a {
+      margin-right: 20px;
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+    }
+
+    .nav-left a:hover {
+      text-decoration: underline;
+    }
+
+    .search-box select {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    /* CONTENIDO */
+    .container {
+      height: calc(100vh - 70px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .card {
@@ -41,64 +60,44 @@
       background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
 
-    .card small {
-      letter-spacing: 2px;
-      opacity: 0.7;
-    }
-
-    .card h1 {
-      font-size: 42px;
-      margin: 10px 0;
-    }
-
-    .card p {
-      margin: 15px 0 25px;
-      line-height: 1.5;
-      opacity: 0.9;
-    }
+    h1 { font-size: 42px; margin: 10px 0; }
+    p { margin: 15px 0 25px; opacity: 0.9; }
 
     .btn {
-      display: inline-block;
       padding: 10px 18px;
       border-radius: 8px;
       background: #1e90ff;
       color: white;
       text-decoration: none;
       font-weight: bold;
-      transition: 0.3s;
     }
-
-    .btn:hover {
-      background: #0f6ad6;
-    }
-
-    .image-area img {
-      width: 420px;
-      max-width: 100%;
-    }
-
   </style>
 </head>
 <body>
-  <div class="container">
 
+  <div class="navbar">
+    <div class="nav-left">
+      <a href="signup.html">Crear Cuenta</a>
+      <a href="#">Iniciar sesión</a>
+    </div>
+
+    <div class="search-box">
+      <select>
+        <option>test</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="container">
     <div class="card">
       <small>PRESENTANDO A...</small>
       <h1>Conoce a 902</h1>
-      <p>
-        El mejor noveno, quien pensará que tendría su propio sitio web.
-      </p>
+      <p>El mejor noveno, quien pensaría que tendría su propio sitio web.</p>
       <a href="#" class="btn">CONÓCENOS</a>
     </div>
-
-    <div class="image-area">
-      <!-- Inserta tu imagen aquí -->
-      <img src="imagen902.png" alt="Imagen 902">
-    </div>
-
   </div>
+
 </body>
 </html>
