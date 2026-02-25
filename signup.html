@@ -1,76 +1,129 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Registro</title>
-<style>
-  body {
-    font-family: Arial;
-    background: black;
-    color: white;
-    text-align: center;
-  }
-
-  input {
-    display: block;
-    margin: 10px auto;
-    padding: 10px;
-    width: 250px;
-    border-radius: 8px;
-    border: none;
-  }
-
-  button {
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    background: #2196f3;
-    color: white;
-    font-weight: bold;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Crear Cuenta</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<h2>Crear Cuenta</h2>
+<header class="topbar">
+  <div class="nav-left">
+    <a href="index.html">Inicio</a>
+  </div>
+</header>
 
-<input id="usuario" placeholder="Usuario">
-<input id="correo" placeholder="Correo">
-<input id="password" type="password" placeholder="Contraseña">
-<input id="foto" placeholder="URL Foto (opcional)">
+<main class="hero">
 
-<button onclick="registrar()">Crear cuenta!</button>
+  <div class="card-left signup-card">
 
-<p id="mensaje"></p>
+    <h1>Crear Cuenta</h1>
+
+    <!-- Foto -->
+    <label class="profile-circle">
+      <span>Sube foto</span>
+      <input type="file" id="photo" hidden accept="image/png, image/jpeg">
+      <img id="preview">
+    </label>
+
+    <!-- Usuario -->
+    <div class="input-group">
+      <input type="text" id="username" placeholder="Usuario">
+      <small class="error" id="user-error"></small>
+    </div>
+
+    <!-- Email -->
+    <div class="input-group">
+      <input type="email" id="email" placeholder="Correo">
+      <small class="error" id="email-error"></small>
+    </div>
+
+    <!-- Password -->
+    <div class="input-group password-group">
+      <input type="password" id="password" placeholder="Contraseña">
+      <span class="toggle-pass" onclick="togglePass()">👁️</span>
+      <small class="error" id="pass-error"></small>
+    </div>
+
+    <button onclick="register()">Crear cuenta!</button>
+    <small class="success" id="success"></small>
+
+  </div>
+
+</main>
 
 <script>
-function registrar() {
-  const usuario = document.getElementById("usuario").value.trim();
-  const correo = document.getElementById("correo").value.trim();
-  const password = document.getElementById("password").value;
-  const foto = document.getElementById("foto").value.trim();
-  const mensaje = document.getElementById("mensaje");
+const API = "http://localhost:3000";
 
-  fetch("http://localhost:3000/registro", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ usuario, correo, password, foto })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.error) {
-      mensaje.textContent = data.error;
-      mensaje.style.color = "red";
+const photoInput = document.getElementById("photo");
+const preview = document.getElementById("preview");
+let photoBase64 = "";
+
+document.querySelector(".profile-circle").onclick = () => photoInput.click();
+
+photoInput.addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    photoBase64 = reader.result;
+    preview.src = photoBase64;
+    preview.style.display = "block";
+  };
+  reader.readAsDataURL(file);
+});
+
+function togglePass() {
+  const pass = document.getElementById("password");
+  pass.type = pass.type === "password" ? "text" : "password";
+}
+
+async function register() {
+  const username = usernameEl.value.trim();
+  const email = emailEl.value.trim();
+  const password = passwordEl.value;
+
+  clearErrors();
+
+  try {
+    const res = await fetch(API + "/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        photo: photoBase64
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showError(data.field, data.message);
       return;
     }
 
-    mensaje.textContent = "Cuenta creada ✅";
-    mensaje.style.color = "lightgreen";
+    success.textContent = "Cuenta creada ✔";
+    setTimeout(() => location.href = "index.html", 1200);
 
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 800);
-  });
+  } catch {
+    alert("Servidor no disponible");
+  }
+}
+
+const usernameEl = document.getElementById("username");
+const emailEl = document.getElementById("email");
+const passwordEl = document.getElementById("password");
+const success = document.getElementById("success");
+
+function clearErrors() {
+  document.querySelectorAll(".error").forEach(e => e.textContent = "");
+}
+
+function showError(field, message) {
+  document.getElementById(field + "-error").textContent = message;
 }
 </script>
 
