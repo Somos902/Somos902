@@ -1,190 +1,85 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+body {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #ab29cb, #df5eff, #000, #000);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
   font-family: "Segoe UI", sans-serif;
 }
 
-body {
-  min-height: 100vh;
-  background: linear-gradient(
-    to bottom,
-    #ab29cb,
-    #df5eff,
-    #000000,
-    #000000
-  )
-  color: white;
-}
-
-/* 🔝 Barra superior */
-
-.topbar {
-  width: 100%;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(10px);
-  position: fixed;
-  top: 0;
-  z-index: 10;
-}
-
-.topbar a {
-  color: white;
-  text-decoration: none;
-  margin-right: 25px;
-  font-size: 15px;
-  font-weight: 600;
-  transition: 0.3s;
-}
-
-.topbar a:hover {
-  opacity: 0.7;
-}
-
-/* 📑 Select derecha */
-
-.nav-right select {
-  background: rgba(255, 255, 255, 0.15);
-  border: none;
-  padding: 8px 14px;
-  border-radius: 20px;
-  color: white;
-  outline: none;
-  cursor: pointer;
-}
-
-/* ⬅ Desplegar hacia la izquierda */
-.nav-right select {
-  direction: rtl;
-}
-
-.nav-right option {
-  direction: ltr;
-}
-
-/* 🎯 Hero */
-
 .hero {
   width: 100%;
-  height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 40px;
-  padding-top: 120px;
+  align-items: center;
 }
-
-/* 🟣 Tarjeta izquierda */
 
 .card-left {
   width: 420px;
   padding: 35px;
   border-radius: 25px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255,255,255,0.08);
   backdrop-filter: blur(14px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
 }
 
-.card-left .tag {
-  font-size: 12px;
-  opacity: 0.7;
-  letter-spacing: 1px;
-  font-weight: 600;
-}
-
-.card-left h1 {
-  font-size: 42px;
-  margin: 12px 0;
+.signup-card h1 {
+  margin-bottom: 20px;
   font-weight: 800;
 }
 
-.card-left h1 strong {
-  font-weight: 900;
-}
-
-.card-left p {
-  font-size: 15px;
-  opacity: 0.9;
-  line-height: 1.6;
-  margin: 20px 0;
-  font-weight: 500;
-}
-
-.card-left button {
-  margin-top: 10px;
-  background: #009dff;
-  border: none;
-  padding: 11px 20px;
-  border-radius: 10px;
-  color: white;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.card-left button:hover {
-  background: #008ae0;
-}
-
-/* 🖼 Imagen sin cuadro */
-
-.card-right {
-  width: 420px;
-  height: 260px;
+.profile-circle {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto 20px;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
 }
 
-.card-right img {
+.profile-circle span {
+  font-size: 12px;
+}
+
+.profile-circle img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-}
-
-/* 🟢 Badge actualización */
-
-.badge-floating {
-  position: fixed;
-  top: 80px;
-  right: 40px;
-  background: rgba(0, 255, 120, 0.9);
-  color: black;
-  padding: 7px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 700;
-  z-index: 9;
-}
-
-/* 👤 Usuario */
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
   object-fit: cover;
-  border: 2px solid white;
+  display: none;
 }
 
-.logout {
+.input-group {
+  margin-bottom: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255,255,255,0.12);
+  color: white;
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: #009dff;
+  color: white;
+  font-weight: bold;
   cursor: pointer;
-  font-size: 18px;
-  margin-left: 8px;
-  transition: 0.3s;
 }
 
-.logout:hover {
-  transform: scale(1.1);
-}
+.error { color: #ff4d4d; font-size: 12px; }
+.success { color: #00ff88; font-size: 13px; }
