@@ -35,10 +35,17 @@
     }
 
     /* FOTO PERFIL */
+    .upload-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
     .profile-upload {
       width: 110px;
       height: 110px;
-      margin: 10px auto 20px;
       border-radius: 50%;
       background: rgba(255,255,255,0.15);
       display: flex;
@@ -73,10 +80,22 @@
       opacity: 1;
     }
 
+    .delete-photo {
+      font-size: 22px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: 0.2s;
+    }
+
+    .delete-photo:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
     input {
       width: 100%;
       padding: 11px;
-      margin-bottom: 12px;
+      margin-bottom: 3px;
       border-radius: 12px;
       border: none;
       outline: none;
@@ -86,6 +105,14 @@
 
     input::placeholder {
       color: rgba(255,255,255,0.7);
+    }
+
+    .error {
+      text-align: left;
+      font-size: 12px;
+      color: red;
+      margin-bottom: 8px;
+      min-height: 14px;
     }
 
     .password-wrapper {
@@ -108,7 +135,7 @@
       color: white;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 5px;
+      margin-top: 10px;
     }
 
     .btn:hover {
@@ -127,20 +154,27 @@
 <div class="card">
   <h2>Crear Cuenta</h2>
 
-  <!-- FOTO PERFIL -->
-  <label class="profile-upload">
-    <img id="preview" style="display:none;">
-    <div class="overlay">Sube desde la computadora</div>
-    <input type="file" id="foto" accept="image/png, image/jpeg" hidden>
-  </label>
+  <div class="upload-row">
+    <label class="profile-upload">
+      <img id="preview" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png">
+      <div class="overlay">Sube desde la computadora</div>
+      <input type="file" id="foto" accept="image/png, image/jpeg" hidden>
+    </label>
+
+    <span class="delete-photo" onclick="eliminarFoto()">🗑</span>
+  </div>
 
   <input type="text" id="usuario" placeholder="Usuario">
+  <div class="error" id="errorUsuario"></div>
+
   <input type="email" id="correo" placeholder="Correo electrónico">
+  <div class="error" id="errorCorreo"></div>
 
   <div class="password-wrapper">
     <input type="password" id="password" placeholder="Contraseña">
     <span class="eye" onclick="togglePassword()">👁</span>
   </div>
+  <div class="error" id="errorPassword"></div>
 
   <button class="btn" onclick="crearCuenta()">¡Crear Cuenta!</button>
 
@@ -151,27 +185,36 @@
   const fotoInput = document.getElementById("foto");
   const preview = document.getElementById("preview");
 
-  // Click en círculo abre explorador
+  const usuarioInput = document.getElementById("usuario");
+  const correoInput = document.getElementById("correo");
+  const passwordInput = document.getElementById("password");
+
+  const errorUsuario = document.getElementById("errorUsuario");
+  const errorCorreo = document.getElementById("errorCorreo");
+  const errorPassword = document.getElementById("errorPassword");
+
+  const DEFAULT_IMG = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+
   document.querySelector(".profile-upload").addEventListener("click", () => {
     fotoInput.click();
   });
 
-  // Preview imagen
   fotoInput.addEventListener("change", () => {
     const file = fotoInput.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = e => {
-        preview.src = e.target.result;
-        preview.style.display = "block";
-      };
+      reader.onload = e => preview.src = e.target.result;
       reader.readAsDataURL(file);
     }
   });
 
+  function eliminarFoto() {
+    fotoInput.value = "";
+    preview.src = DEFAULT_IMG;
+  }
+
   function togglePassword() {
-    const pass = document.getElementById("password");
-    pass.type = pass.type === "password" ? "text" : "password";
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
   }
 
   function validarCorreo(correo) {
@@ -182,34 +225,43 @@
     return /^(?=.*[A-Z]).{8,}$/.test(pass);
   }
 
+  /* VALIDACIÓN EN TIEMPO REAL */
+
+  usuarioInput.addEventListener("input", () => {
+    if (usuarioInput.value.includes(" "))
+      errorUsuario.textContent = "No debe contener espacios";
+    else
+      errorUsuario.textContent = "";
+  });
+
+  correoInput.addEventListener("input", () => {
+    if (!validarCorreo(correoInput.value))
+      errorCorreo.textContent = "Correo no válido";
+    else
+      errorCorreo.textContent = "";
+  });
+
+  passwordInput.addEventListener("input", () => {
+    if (!validarPassword(passwordInput.value))
+      errorPassword.textContent = "Mínimo 8 caracteres y 1 mayúscula";
+    else
+      errorPassword.textContent = "";
+  });
+
   function crearCuenta() {
-    const usuario = document.getElementById("usuario").value.trim();
-    const correo = document.getElementById("correo").value.trim();
-    const password = document.getElementById("password").value;
+    const usuario = usuarioInput.value.trim();
+    const correo = correoInput.value.trim();
+    const password = passwordInput.value;
     const mensaje = document.getElementById("mensaje");
 
-    const file = fotoInput.files[0];
-
-    if (!usuario || !correo || !password || !file) {
-      mensaje.textContent = "Completa todos los campos";
+    if (!usuario || !correo || !password) {
+      mensaje.textContent = "Completa los campos obligatorios";
       mensaje.style.color = "orange";
       return;
     }
 
-    if (usuario.includes(" ")) {
-      mensaje.textContent = "El usuario no puede tener espacios";
-      mensaje.style.color = "orange";
-      return;
-    }
-
-    if (!validarCorreo(correo)) {
-      mensaje.textContent = "Correo no válido";
-      mensaje.style.color = "orange";
-      return;
-    }
-
-    if (!validarPassword(password)) {
-      mensaje.textContent = "Contraseña: 8+ caracteres y 1 mayúscula";
+    if (usuario.includes(" ") || !validarCorreo(correo) || !validarPassword(password)) {
+      mensaje.textContent = "Corrige los errores";
       mensaje.style.color = "orange";
       return;
     }
@@ -218,31 +270,26 @@
 
     if (cuentas.some(c => c.correo === correo)) {
       mensaje.textContent = "Ese correo ya está registrado";
-      mensaje.style.color = "orange";
+      mensaje.style.color = "red";
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = e => {
-      const nuevaCuenta = {
-        usuario,
-        correo,
-        password,
-        foto: e.target.result
-      };
-
-      cuentas.push(nuevaCuenta);
-      localStorage.setItem("cuentas902", JSON.stringify(cuentas));
-
-      mensaje.textContent = "Cuenta creada correctamente ✅";
-      mensaje.style.color = "lightgreen";
-
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 1500);
+    const nuevaCuenta = {
+      usuario,
+      correo,
+      password,
+      foto: preview.src || DEFAULT_IMG
     };
 
-    reader.readAsDataURL(file);
+    cuentas.push(nuevaCuenta);
+    localStorage.setItem("cuentas902", JSON.stringify(cuentas));
+
+    mensaje.textContent = "Cuenta creada correctamente ✅";
+    mensaje.style.color = "lightgreen";
+
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 1500);
   }
 </script>
 
