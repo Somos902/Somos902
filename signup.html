@@ -3,20 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Crear Cuenta</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
 
+  <style>
     body {
       height: 100vh;
       background: linear-gradient(to bottom, #ab29cb, #df5eff, #000000, #000000);
       display: flex;
       justify-content: center;
       align-items: center;
+      font-family: 'Segoe UI', sans-serif;
       color: white;
     }
 
@@ -30,11 +25,6 @@
       text-align: center;
     }
 
-    h2 {
-      margin-bottom: 15px;
-    }
-
-    /* FOTO PERFIL */
     .upload-row {
       display: flex;
       justify-content: center;
@@ -48,12 +38,9 @@
       height: 110px;
       border-radius: 50%;
       background: rgba(255,255,255,0.15);
-      display: flex;
-      justify-content: center;
-      align-items: center;
       cursor: pointer;
-      position: relative;
       overflow: hidden;
+      position: relative;
     }
 
     .profile-upload img {
@@ -64,8 +51,7 @@
 
     .overlay {
       position: absolute;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background: rgba(0,0,0,0.5);
       display: flex;
       justify-content: center;
@@ -73,7 +59,6 @@
       opacity: 0;
       transition: 0.3s;
       font-size: 12px;
-      padding: 10px;
     }
 
     .profile-upload:hover .overlay {
@@ -83,19 +68,12 @@
     .delete-photo {
       font-size: 22px;
       cursor: pointer;
-      opacity: 0.7;
-      transition: 0.2s;
-    }
-
-    .delete-photo:hover {
-      opacity: 1;
-      transform: scale(1.1);
     }
 
     input {
       width: 100%;
       padding: 11px;
-      margin-bottom: 3px;
+      margin: 6px 0;
       border-radius: 12px;
       border: none;
       outline: none;
@@ -103,27 +81,11 @@
       color: white;
     }
 
-    input::placeholder {
-      color: rgba(255,255,255,0.7);
-    }
-
     .error {
       text-align: left;
       font-size: 12px;
       color: red;
-      margin-bottom: 8px;
       min-height: 14px;
-    }
-
-    .password-wrapper {
-      position: relative;
-    }
-
-    .eye {
-      position: absolute;
-      right: 12px;
-      top: 11px;
-      cursor: pointer;
     }
 
     .btn {
@@ -138,31 +100,28 @@
       margin-top: 10px;
     }
 
-    .btn:hover {
-      background: #0f6ad6;
-    }
-
     .msg {
       margin-top: 10px;
       font-weight: bold;
-      min-height: 20px;
     }
   </style>
 </head>
+
 <body>
 
 <div class="card">
   <h2>Crear Cuenta</h2>
 
   <div class="upload-row">
-    <label class="profile-upload">
-      <img id="preview" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png">
+    <div class="profile-upload" onclick="abrirSelector()">
+      <img id="preview">
       <div class="overlay">Sube desde la computadora</div>
-      <input type="file" id="foto" accept="image/png, image/jpeg" hidden>
-    </label>
+    </div>
 
     <span class="delete-photo" onclick="eliminarFoto()">🗑</span>
   </div>
+
+  <input type="file" id="foto" accept="image/png, image/jpeg" hidden>
 
   <input type="text" id="usuario" placeholder="Usuario">
   <div class="error" id="errorUsuario"></div>
@@ -170,10 +129,7 @@
   <input type="email" id="correo" placeholder="Correo electrónico">
   <div class="error" id="errorCorreo"></div>
 
-  <div class="password-wrapper">
-    <input type="password" id="password" placeholder="Contraseña">
-    <span class="eye" onclick="togglePassword()">👁</span>
-  </div>
+  <input type="password" id="password" placeholder="Contraseña">
   <div class="error" id="errorPassword"></div>
 
   <button class="btn" onclick="crearCuenta()">¡Crear Cuenta!</button>
@@ -195,26 +151,24 @@
 
   const DEFAULT_IMG = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
 
-  document.querySelector(".profile-upload").addEventListener("click", () => {
+  preview.src = DEFAULT_IMG;
+
+  function abrirSelector() {
     fotoInput.click();
-  });
+  }
 
   fotoInput.addEventListener("change", () => {
     const file = fotoInput.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = e => preview.src = e.target.result;
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = e => preview.src = e.target.result;
+    reader.readAsDataURL(file);
   });
 
   function eliminarFoto() {
     fotoInput.value = "";
     preview.src = DEFAULT_IMG;
-  }
-
-  function togglePassword() {
-    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
   }
 
   function validarCorreo(correo) {
@@ -225,27 +179,22 @@
     return /^(?=.*[A-Z]).{8,}$/.test(pass);
   }
 
-  /* VALIDACIÓN EN TIEMPO REAL */
-
   usuarioInput.addEventListener("input", () => {
-    if (usuarioInput.value.includes(" "))
-      errorUsuario.textContent = "No debe contener espacios";
-    else
-      errorUsuario.textContent = "";
+    errorUsuario.textContent = usuarioInput.value.includes(" ")
+      ? "No debe contener espacios"
+      : "";
   });
 
   correoInput.addEventListener("input", () => {
-    if (!validarCorreo(correoInput.value))
-      errorCorreo.textContent = "Correo no válido";
-    else
-      errorCorreo.textContent = "";
+    errorCorreo.textContent = validarCorreo(correoInput.value)
+      ? ""
+      : "Correo no válido";
   });
 
   passwordInput.addEventListener("input", () => {
-    if (!validarPassword(passwordInput.value))
-      errorPassword.textContent = "Mínimo 8 caracteres y 1 mayúscula";
-    else
-      errorPassword.textContent = "";
+    errorPassword.textContent = validarPassword(passwordInput.value)
+      ? ""
+      : "Mínimo 8 caracteres y 1 mayúscula";
   });
 
   function crearCuenta() {
@@ -255,7 +204,7 @@
     const mensaje = document.getElementById("mensaje");
 
     if (!usuario || !correo || !password) {
-      mensaje.textContent = "Completa los campos obligatorios";
+      mensaje.textContent = "Completa los campos";
       mensaje.style.color = "orange";
       return;
     }
@@ -278,7 +227,7 @@
       usuario,
       correo,
       password,
-      foto: preview.src || DEFAULT_IMG
+      foto: preview.src
     };
 
     cuentas.push(nuevaCuenta);
@@ -289,7 +238,7 @@
 
     setTimeout(() => {
       window.location.href = "index.html";
-    }, 1500);
+    }, 1200);
   }
 </script>
 
