@@ -150,7 +150,6 @@
   const errorPassword = document.getElementById("errorPassword");
 
   const DEFAULT_IMG = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
-
   preview.src = DEFAULT_IMG;
 
   function abrirSelector() {
@@ -197,49 +196,11 @@
       : "Mínimo 8 caracteres y 1 mayúscula";
   });
 
-  <script>
-
-async function crearCuenta() {
-  const usuario = document.getElementById("usuario").value.trim();
-  const correo = document.getElementById("correo").value.trim();
-  const password = document.getElementById("password").value;
-  const mensaje = document.getElementById("mensaje");
-  const preview = document.getElementById("preview");
-
-  if (!usuario || !correo || !password) {
-    mensaje.textContent = "Completa los campos";
-    mensaje.style.color = "red";
-    return;
-  }
-
-  const res = await fetch("http://localhost:3000/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      usuario,
-      correo,
-      password,
-      foto: preview ? preview.src : null
-    })
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    mensaje.textContent = data.message;
-    mensaje.style.color = "red";
-    return;
-  }
-
-  mensaje.textContent = "Cuenta creada correctamente ✅";
-  mensaje.style.color = "lightgreen";
-
-  setTimeout(() => {
-    window.location.href = "login.html";
-  }, 1200);
-}
-
-</script>
+  async function crearCuenta() {
+    const usuario = usuarioInput.value.trim();
+    const correo = correoInput.value.trim();
+    const password = passwordInput.value;
+    const mensaje = document.getElementById("mensaje");
 
     if (usuario.includes(" ") || !validarCorreo(correo) || !validarPassword(password)) {
       mensaje.textContent = "Corrige los errores";
@@ -247,32 +208,30 @@ async function crearCuenta() {
       return;
     }
 
-    let cuentas = JSON.parse(localStorage.getItem("cuentas902")) || [];
+    const res = await fetch("http://localhost:3000/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        usuario,
+        correo,
+        password,
+        foto: preview.src
+      })
+    });
 
-    if (cuentas.some(c => c.correo === correo)) {
-      mensaje.textContent = "Ese correo ya está registrado";
+    const data = await res.json();
+
+    if (!res.ok) {
+      mensaje.textContent = data.message;
       mensaje.style.color = "red";
       return;
     }
-
-    const nuevaCuenta = {
-      usuario,
-      correo,
-      password,
-      foto: preview.src
-    };
-
-    cuentas.push(nuevaCuenta);
-    localStorage.setItem("cuentas902", JSON.stringify(cuentas));
 
     mensaje.textContent = "Cuenta creada correctamente ✅";
     mensaje.style.color = "lightgreen";
 
     setTimeout(() => {
-      window.location.href = "index.html";
+      window.location.href = "login.html";
     }, 1200);
   }
 </script>
-
-</body>
-</html>
