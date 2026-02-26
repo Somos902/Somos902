@@ -197,17 +197,49 @@
       : "Mínimo 8 caracteres y 1 mayúscula";
   });
 
-  function crearCuenta() {
-    const usuario = usuarioInput.value.trim();
-    const correo = correoInput.value.trim();
-    const password = passwordInput.value;
-    const mensaje = document.getElementById("mensaje");
+  <script>
 
-    if (!usuario || !correo || !password) {
-      mensaje.textContent = "Completa los campos";
-      mensaje.style.color = "orange";
-      return;
-    }
+async function crearCuenta() {
+  const usuario = document.getElementById("usuario").value.trim();
+  const correo = document.getElementById("correo").value.trim();
+  const password = document.getElementById("password").value;
+  const mensaje = document.getElementById("mensaje");
+  const preview = document.getElementById("preview");
+
+  if (!usuario || !correo || !password) {
+    mensaje.textContent = "Completa los campos";
+    mensaje.style.color = "red";
+    return;
+  }
+
+  const res = await fetch("http://localhost:3000/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      usuario,
+      correo,
+      password,
+      foto: preview ? preview.src : null
+    })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    mensaje.textContent = data.message;
+    mensaje.style.color = "red";
+    return;
+  }
+
+  mensaje.textContent = "Cuenta creada correctamente ✅";
+  mensaje.style.color = "lightgreen";
+
+  setTimeout(() => {
+    window.location.href = "login.html";
+  }, 1200);
+}
+
+</script>
 
     if (usuario.includes(" ") || !validarCorreo(correo) || !validarPassword(password)) {
       mensaje.textContent = "Corrige los errores";
