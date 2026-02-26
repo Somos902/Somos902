@@ -121,32 +121,33 @@
       errorPassword.textContent = "";
   });
 
-  function iniciarSesion() {
-    const login = document.getElementById("login").value.trim();
-    const password = passwordInput.value;
-    const mensaje = document.getElementById("mensaje");
+async function iniciarSesion() {
+  const login = document.getElementById("login").value.trim();
+  const password = passwordInput.value;
+  const mensaje = document.getElementById("mensaje");
 
-    if (!login || !password) {
-      mensaje.textContent = "Completa los campos";
-      return;
-    }
-
-    let cuentas = JSON.parse(localStorage.getItem("cuentas902")) || [];
-
-    const cuenta = cuentas.find(c =>
-      (c.correo === login || c.usuario === login) &&
-      c.password === password
-    );
-
-    if (!cuenta) {
-      mensaje.textContent = "Esta cuenta no existe.";
-      return;
-    }
-
-    localStorage.setItem("sesion902", JSON.stringify(cuenta));
-
-    window.location.href = "index.html";
+  if (!login || !password) {
+    mensaje.textContent = "Completa los campos";
+    return;
   }
+
+  const res = await fetch("http://localhost:3000/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ login, password })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    mensaje.textContent = data.message;
+    return;
+  }
+
+  localStorage.setItem("sesion902", JSON.stringify(data));
+
+  window.location.href = "index.html";
+}
 </script>
 
 </body>
