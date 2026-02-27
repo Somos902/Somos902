@@ -18,7 +18,6 @@
       color: white;
     }
 
-    /* NAVBAR */
     .navbar {
       width: 100%;
       padding: 15px 40px;
@@ -49,7 +48,6 @@
       border: none;
     }
 
-    /* PERFIL EN NAVBAR */
     .profile-nav {
       display: flex;
       align-items: center;
@@ -75,7 +73,6 @@
       transform: scale(1.1);
     }
 
-    /* CONTENIDO */
     .container {
       height: 100vh;
       display: flex;
@@ -129,7 +126,6 @@
 
 <body>
 
-  <!-- NAVBAR -->
   <div class="navbar">
     <div class="nav-left" id="nav-auth">
       <a href="signup.html">Crear Cuenta</a>
@@ -143,7 +139,6 @@
     </div>
   </div>
 
-  <!-- CONTENIDO -->
   <div class="container">
     <div class="content">
 
@@ -161,15 +156,20 @@
     </div>
   </div>
 
-  <!-- SCRIPT SESIÓN -->
   <script>
     const sesion = JSON.parse(localStorage.getItem("sesion902"));
 
     if (sesion) {
+
+      // Imagen por defecto si no existe foto
+      const fotoPerfil = sesion.foto 
+        ? sesion.foto 
+        : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
       document.getElementById("nav-auth").innerHTML = `
         <div class="profile-nav">
-          <img src="${sesion.foto}">
-          <b>${sesion.usuario}</b>
+          <img src="${fotoPerfil}">
+          <b>${sesion.username}</b>
           <span class="logout" onclick="cerrarSesion()">🚪</span>
         </div>
       `;
@@ -177,13 +177,10 @@
 
     function cerrarSesion() {
       localStorage.removeItem("sesion902");
-
-      // Evita volver atrás
       window.location.replace("index.html");
     }
   </script>
 
-  <!-- BLOQUEO BOTÓN ATRÁS -->
   <script>
     window.history.pushState(null, "", window.location.href);
     window.onpopstate = function () {
